@@ -16,23 +16,18 @@ body {
 }
 .title {
     justify-self: center;
-    border: 1px blue solid
+    color: #5B300D;
 }
 .carousell {
-    border: 1px green solid;
     display:grid;
     gap: 10px;
-    
-
 }
 .list-view {
     width: 80%;
-    border:rgb(255, 0, 85) solid;
     overflow: hidden;
     place-self: center;
 }
 .list {
-    border: 10px violet solid;
     width: calc(12 / 4 * 100%);
     display: flex;
     justify-content: space-around;
@@ -44,7 +39,7 @@ body {
    padding-left: 5px;
    padding-right: 5px;
    height: 100px;
-   border: 2px red solid; 
+   border: #5B300D solid 1px;
 }
 .buttons {
     display: flex;
@@ -62,7 +57,6 @@ body {
     transform: scale(1.2);
 } 
 .buttons > .dots {
-    border: 1px rgb(255, 0, 85) solid;
     font-size: 10px;
     display:flex;
     gap: 10px;
