@@ -37,8 +37,13 @@ body {
    width: calc(100% / 14);
    padding-left: 5px;
    padding-right: 5px;
-   height: 100px;
-   border: #5B300D solid 1px;
+   height: 100%;
+}
+.first-carousel-card {
+    width: 100%;
+    padding: 10px;
+   
+
 }
 .buttons {
     display: flex;
