@@ -31,9 +31,19 @@ class Carousel {
     }
 
     isValidSelector(){
-        return true;
+        if (typeof this.selector !== 'string'
+            || this.selector === ''){
+            return false 
+        };
+        return true; //vietoj viso sito galima: typeof this.selector === string || this.selector !== ''
     }
+
     isValidData() {
+        if(!this.isObj(this.data)
+           || !Array.isArray(this.data.list)
+           ||this.data.list.length === 0){
+            return false;
+        }
         return true;
     }
 
@@ -58,15 +68,15 @@ class Carousel {
         if(this.isObj(this.settings.size)){
             if(Number.isInteger(this.settings.size.mobile)//ar naturalus skaicius
                && this.settings.size.mobile > 0){ 
-                this.size.mobile === this.settings.size.mobile;
+                this.size.mobile = this.settings.size.mobile;
             }
             if(Number.isInteger(this.settings.size.tablet)//ar naturalus skaicius
                && this.settings.size.tablet > 0){ 
-                this.size.tablet === this.settings.size.tablet;
+                this.size.tablet = this.settings.size.tablet;
             }
             if(Number.isInteger(this.settings.size.desktop)//ar naturalus skaicius
                && this.settings.size.desktop > 0){ 
-                this.size.desktop === this.settings.size.desktop;
+                this.size.desktop = this.settings.size.desktop;
             }
         }
         if(typeof this.settings.previousNext === 'boolean') {
@@ -77,20 +87,33 @@ class Carousel {
         }
     }
     listHTML(){
+        let HTML = '';
+
+        let copyCount = 0;
+        for (const key in this.size){
+            if(copyCount < this.size[key]){
+                copyCount = this.size[key];
+                console.log(copyCount)
+            }
+        }
+        console.log(copyCount) //// cia taisyti
+        const list = [
+            ...this.data.list.slice(-copyCount),
+            ...this.data.list,
+            ...this.data.list.slice(0, copyCount)
+        ];
+     console.log(list.length)
+        console.log(list)
+        for (const item of list){
+            HTML += `<div class="item">4</div>`
+        }
+        const width = list.length / this.size.desktop * 100;
+        const trans = 100 / list.length * this.size.desktop;
         return `<div class="list-view">
-                    <div class="list">
-                        <div class="item">4</div>
-                        <div class="item">5</div>
-                        <div class="item">6</div>
-                        <div class="item">1</div>
-                        <div class="item">2</div>
-                        <div class="item">3</div>
-                        <div class="item">4</div>
-                        <div class="item">5</div>
-                        <div class="item">6</div>
-                        <div class="item">1</div>
-                        <div class="item">2</div>
-                        <div class="item">3</div>
+                    <div class="list" 
+                        style="width:${width}% 
+                            transform:translateX(calc(${trans}%))">
+                        ${HTML}
                     </div>
                 </div>`
     }

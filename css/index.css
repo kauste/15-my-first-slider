@@ -28,14 +28,13 @@ body {
     place-self: center;
 }
 .list {
-    width: calc(12 / 4 * 100%);
+    width: calc(14 / 4 * 100%);
     display: flex;
-    justify-content: space-around;
     transition: all 1.5s;
-    transform:translateX(calc(-100% / 12 * 3))
+    transform:translateX(calc(-100% / 14 * 4))
 }
 .item {
-   width: calc(100% / 12);
+   width: calc(100% / 14);
    padding-left: 5px;
    padding-right: 5px;
    height: 100px;

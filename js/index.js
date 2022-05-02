@@ -4,7 +4,7 @@ import { TestimonialCard } from "./components/testimonial.js";
 import { firstCarouselData } from "./data/first-carousel-data.js";
 
 
-const firstCarousel = new Carousel('#first_carousel', FirstCarouselCard, firstCarouselData, {
+ new Carousel('#first_carousel', FirstCarouselCard, firstCarouselData, {
     size: {
         mobile: 1,
         tablet: 3,
@@ -13,6 +13,3 @@ const firstCarousel = new Carousel('#first_carousel', FirstCarouselCard, firstCa
     previousNext:true,
     dots: true,
 });
-
-
-console.log(firstCarousel);
