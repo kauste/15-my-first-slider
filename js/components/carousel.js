@@ -14,6 +14,10 @@ class Carousel {
         this.previousNext = true;
         this.dots = true;
 
+        this.originalListSize = this.data.list.length;
+        this.currentVisibilityIndex = 0;
+        this.copyCount = 0;
+        this.listSize = 0;
         this.init();
     }
     init () {
@@ -28,6 +32,8 @@ class Carousel {
         }
         this.updateDefatltSettings();
         this.render();
+        this.action();
+
     }
 
     isValidSelector(){
@@ -41,7 +47,7 @@ class Carousel {
     isValidData() {
         if(!this.isObj(this.data)
            || !Array.isArray(this.data.list)
-           ||this.data.list.length === 0){
+           || this.originalListSize === 0){
             return false;
         }
         return true;
@@ -66,7 +72,7 @@ class Carousel {
             return false;
         }
         if(this.isObj(this.settings.size)){
-            if(Number.isInteger(this.settings.size.mobile)//ar naturalus skaicius
+            if(Number.isInteger(this.size.mobile)//ar naturalus skaicius
                && this.settings.size.mobile > 0){ 
                 this.size.mobile = this.settings.size.mobile;
             }
@@ -89,29 +95,37 @@ class Carousel {
     listHTML(){
         let HTML = '';
 
-        let copyCount = 0;
         for (const key in this.size){
-            if(copyCount < this.size[key]){
-                copyCount = this.size[key];
-                console.log(copyCount)
+            if(this.copyCount < this.size[key]){
+                this.copyCount = this.size[key];
             }
         }
-        console.log(copyCount) //// cia taisyti
+        
+        
         const list = [
-            ...this.data.list.slice(-copyCount),
+            ...this.data.list.slice(-this.copyCount),
             ...this.data.list,
-            ...this.data.list.slice(0, copyCount)
+            ...this.data.list.slice(0, this.copyCount)
         ];
+
+
         for (const item of list){
             const card = new this.cardClass(this.data.srcFolder, item);
-            HTML += `<div class="item">${card.render()}</div>`
+            if(card.isValidData() && card.isValidFolder()){
+                HTML += `<div class="item">${card.render()}</div>`
+            }
         }
+
+        this.listSize = list.length;
+        console.log(list.length)
         const width = list.length / this.size.desktop * 100;
-        const trans = 100 / list.length * this.size.desktop;
+        this.currentVisibilityIndex = this.size.desktop;
+        const trans = 100 / list.length * this.currentVisibilityIndex;
+console.log(width)
         return `<div class="list-view">
                     <div class="list" 
                         style="width:${width}% 
-                            transform:translateX(calc(${trans}%))">
+                            transform:translateX(calc(-${trans}%))">
                         ${HTML}
                     </div>
                 </div>`
@@ -133,11 +147,7 @@ class Carousel {
         if(this.dots) {
             dotsHTML = `<div class="dots">
                             <i class="dot  active fa-solid fa-circle"></i>
-                            <i class="dot fa-solid fa-circle"></i>
-                            <i class="dot fa-solid fa-circle"></i>
-                            <i class="dot fa-solid fa-circle"></i>
-                            <i class="dot fa-solid fa-circle"></i>
-                            <i class="dot fa-solid fa-circle"></i>
+                            ${`<i class="dot fa-solid fa-circle"></i>`.repeat(this.originalListSize - 1)}
                         </div>`
         }
         return `<div class="buttons">
@@ -151,7 +161,33 @@ class Carousel {
         const HTML = this.listHTML() + this.actionsHTML();
         this.carouselDOM.innerHTML = HTML; // galima tiesiog HTML isistatyti
     }
-    
+    action () {
+       const listDOM = this.carouselDOM.querySelector('.list');
+       const nextDOM = this.carouselDOM.querySelector('.fa-angle-right');
+       const previousDOM = this.carouselDOM.querySelector('.fa-angle-left');
+       this.currentVisibilityIndex === this.originalListSize + this.copyCount
+
+       nextDOM.addEventListener('click', () => {
+            if (this.currentVisibilityIndex === this.originalListSize + this.copyCount){
+                this.currentVisibilityIndex = this.copyCount;
+            } else {
+                this.currentVisibilityIndex++
+            }
+                const trans = 100 / this.listSize * this.currentVisibilityIndex;
+                listDOM.style.transform = `translateX(-${trans}%)`
+            
+      
+       })
+       previousDOM.addEventListener('click', () => {
+        if(this.currentVisibilityIndex === 0) {
+            this.currentVisibilityIndex = this.copyCount + 1
+        } else {
+           this.currentVisibilityIndex--;
+        }
+            const trans = 100 / this.listSize * this.currentVisibilityIndex;
+            listDOM.style.transform =`translateX(-${trans}%)`
+    })
+    }
 }
 
 export { Carousel }

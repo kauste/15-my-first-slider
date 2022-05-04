@@ -8,7 +8,7 @@ import { firstCarouselData } from "./data/first-carousel-data.js";
     size: {
         mobile: 1,
         tablet: 3,
-        desktop: 4,
+        desktop: 2,
     },
     previousNext:true,
     dots: true,

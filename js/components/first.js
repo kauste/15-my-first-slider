@@ -2,7 +2,6 @@ class FirstCarouselCard {
     constructor (folder, data){
         this.folder = folder;
         this.data = data;
-        console.log(this)
     }
     
     isValidFolder(){
