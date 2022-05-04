@@ -30,13 +30,8 @@ body {
     place-self: center;
 }
 .list {
-    width: calc(14 / 4 * 100%);
     display: flex;
     transition: all 1.5s;
-    transform:translateX(calc(-100% / 14 * 4))
-}
-.item {
-   width: calc(100% / 14);
 }
 .first-carousel-card {
     width: 100%;
@@ -44,7 +39,6 @@ body {
   }
 .buttons {
     display: flex;
-    gap: px;
     align-items: center;
     justify-content: center;
     gap: 15px;
@@ -52,10 +46,12 @@ body {
 .buttons > .fa-angle-left, .buttons > .fa-angle-right  {
     font-size: 25px;
     color: #5B300D;
+    padding: 20px;
 }
 
 .buttons > .fa-angle-left:hover, .buttons > .fa-angle-right:hover {
     transform: scale(1.2);
+    cursor: pointer;
 } 
 .buttons > .dots {
     font-size: 10px;

@@ -18,6 +18,9 @@ class Carousel {
         this.currentVisibilityIndex = 0;
         this.copyCount = 0;
         this.listSize = 0;
+        this.isAnimationInAction = false;
+        this.animationDurationMs = 500;
+        
         this.init();
     }
     init () {
@@ -118,13 +121,13 @@ class Carousel {
 
         this.listSize = list.length;
         console.log(list.length)
-        const width = list.length / this.size.desktop * 100;
+        const width = list.length / this.size.desktop * 100; // nepamirsti, kad listo ilgis priklauso nuo kopijų, o kopiju kiekis priklauso nuo to, kiek daugiausiai bus matoma ekrane
         this.currentVisibilityIndex = this.size.desktop;
         const trans = 100 / list.length * this.currentVisibilityIndex;
-console.log(width)
+console.log(this.size.desktop)
         return `<div class="list-view">
                     <div class="list" 
-                        style="width:${width}% 
+                        style="width:${width}%; 
                             transform:translateX(calc(-${trans}%))">
                         ${HTML}
                     </div>
@@ -168,24 +171,51 @@ console.log(width)
        this.currentVisibilityIndex === this.originalListSize + this.copyCount
 
        nextDOM.addEventListener('click', () => {
-            if (this.currentVisibilityIndex === this.originalListSize + this.copyCount){
-                this.currentVisibilityIndex = this.copyCount;
-            } else {
-                this.currentVisibilityIndex++
-            }
-                const trans = 100 / this.listSize * this.currentVisibilityIndex;
-                listDOM.style.transform = `translateX(-${trans}%)`
-            
-      
+           if(!this.isAnimationInAction){
+                if (this.currentVisibilityIndex === this.originalListSize + this.copyCount){
+                    setTimeout(() => {
+                        listDOM.style.transition = `all 0s`;
+                        this.currentVisibilityIndex = this.copyCount;
+                        const trans = 100 / this.listSize * this.currentVisibilityIndex;
+                        listDOM.style.transform = `translateX(-${trans}%)`;
+                        setTimeout(() => {
+                            listDOM.style.transition = `all 0.5s linear`;
+                        }, 16)
+                    }, 500)
+                } else {
+                    this.currentVisibilityIndex++;
+                    const trans = 100 / this.listSize * this.currentVisibilityIndex;
+                    listDOM.style.transform = `translateX(-${trans}%)`;
+                }
+           }
+           this.isAnimationInAction = true;
+
+           setTimeout(() => {
+            this.isAnimationInAction = false;
+           }, this.animationDurationMs)
        })
+
        previousDOM.addEventListener('click', () => {
         if(this.currentVisibilityIndex === 0) {
-            this.currentVisibilityIndex = this.copyCount + 1
+            setTimeout(() => {
+                listDOM.style.transition = `all 0s`;
+                this.currentVisibilityIndex = this.listSize - 2 * this.copyCount;
+                const trans = 100 / this.listSize * this.currentVisibilityIndex;
+                listDOM.style.transform =`translateX(-${trans}%)`;
+                setTimeout(() => {
+                    listDOM.style.transition = `all 0.5s linear`;
+                }, 0)
+            }, this.animationDurationMs)
         } else {
-           this.currentVisibilityIndex--;
-        }
+            this.currentVisibilityIndex--;
             const trans = 100 / this.listSize * this.currentVisibilityIndex;
             listDOM.style.transform =`translateX(-${trans}%)`
+        }
+        this.isAnimationInAction = true;
+
+        setTimeout(() => {
+         this.isAnimationInAction = false;
+        }, this.animationDurationMs)
     })
     }
 }
