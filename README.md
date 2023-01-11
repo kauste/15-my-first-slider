@@ -16,7 +16,7 @@ This is my first carousel, created using object-oriented programming for the fir
 - Rendering
 - Javascript methods
 
-## Personal contribution alone
+## Mainly own work
 
 - Events on dots
 - Adaptation to different screen sizes
