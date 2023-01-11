@@ -229,7 +229,7 @@ class Carousel {
                 listDOM.style.transform =`translateX(-${trans}%)`;
                 setTimeout(() => {
                     listDOM.style.transition = `all 0.5s linear`;
-                }, 0.16)
+                }, 16)
             }, this.animationDurationMs)
         } else {
             this.currentVisibilityIndex--;
@@ -255,6 +255,7 @@ class Carousel {
                 const trans = 100 / this.listSize * (i + this.currentSize);
                 listDOM.style.transition = 'all 0s';
                 listDOM.style.transform = `translateX(-${trans}%)`;
+                this.currentVisibilityIndex = i + this.currentSize;
                 setTimeout(() => {
                     listDOM.style.transition = 'all 1s';
                 }, 16)
