@@ -11,6 +11,9 @@ class Carousel {
             tablet: 2,
             desktop: 3,
         },
+
+        this.currentSize;
+
         this.previousNext = true;
         this.dots = true;
 
@@ -19,7 +22,7 @@ class Carousel {
         this.copyCount = 0;
         this.listSize = 0;
         this.isAnimationInAction = false;
-        this.animationDurationMs = 500;
+        this.animationDurationMs = 1000;
         
         this.init();
     }
@@ -94,6 +97,16 @@ class Carousel {
         if(typeof this.settings.dots === 'boolean') {
             this.dots = this.settings.dots;
         }
+
+        if(window.innerWidth >= 960){
+            this.currentSize = this.size.desktop;
+        }
+        else if(window.innerWidth >= 496){
+            this.currentSize = this.size.tablet;
+        }
+        else {
+            this.currentSize = this.size.mobile;
+        }
     }
     listHTML(){
         let HTML = '';
@@ -120,11 +133,11 @@ class Carousel {
         }
 
         this.listSize = list.length;
-        console.log(list.length)
-        const width = list.length / this.size.desktop * 100; // nepamirsti, kad listo ilgis priklauso nuo kopijų, o kopiju kiekis priklauso nuo to, kiek daugiausiai bus matoma ekrane
-        this.currentVisibilityIndex = this.size.desktop;
+
+        const width = list.length / this.currentSize * 100; // nepamirsti, kad listo ilgis priklauso nuo kopijų, o kopiju kiekis priklauso nuo to, kiek daugiausiai bus matoma ekrane
+        this.currentVisibilityIndex = this.currentSize;
         const trans = 100 / list.length * this.currentVisibilityIndex;
-console.log(this.size.desktop)
+
         return `<div class="list-view">
                     <div class="list" 
                         style="width:${width}%; 
@@ -149,7 +162,7 @@ console.log(this.size.desktop)
         
         if(this.dots) {
             dotsHTML = `<div class="dots">
-                            <i class="dot  active fa-solid fa-circle"></i>
+                            <i class="dot fa-solid fa-circle"></i>
                             ${`<i class="dot fa-solid fa-circle"></i>`.repeat(this.originalListSize - 1)}
                         </div>`
         }
@@ -168,26 +181,26 @@ console.log(this.size.desktop)
        const listDOM = this.carouselDOM.querySelector('.list');
        const nextDOM = this.carouselDOM.querySelector('.fa-angle-right');
        const previousDOM = this.carouselDOM.querySelector('.fa-angle-left');
-       this.currentVisibilityIndex === this.originalListSize + this.copyCount
+       const dotsDOM = this.carouselDOM.querySelectorAll('.dot');
+       this.currentVisibilityIndex === this.originalListSize + this.copyCount;
 
        nextDOM.addEventListener('click', () => {
-           if(!this.isAnimationInAction){
+           if(!this.isAnimationInAction) {
+                this.currentVisibilityIndex++;
+                const trans = - 100 / this.listSize * this.currentVisibilityIndex;
+                listDOM.style.transform = `translateX(${trans}%)`;
                 if (this.currentVisibilityIndex === this.originalListSize + this.copyCount){
                     setTimeout(() => {
                         listDOM.style.transition = `all 0s`;
                         this.currentVisibilityIndex = this.copyCount;
-                        const trans = 100 / this.listSize * this.currentVisibilityIndex;
-                        listDOM.style.transform = `translateX(-${trans}%)`;
+                        const trans = - 100 / this.listSize * this.currentVisibilityIndex;
+                        listDOM.style.transform = `translateX(${trans}%)`;
                         setTimeout(() => {
-                            listDOM.style.transition = `all 0.5s linear`;
+                            listDOM.style.transition = `all 1s`;
                         }, 16)
-                    }, 500)
-                } else {
-                    this.currentVisibilityIndex++;
-                    const trans = 100 / this.listSize * this.currentVisibilityIndex;
-                    listDOM.style.transform = `translateX(-${trans}%)`;
-                }
-           }
+                    }, this.animationDurationMs)
+                } 
+            }
            this.isAnimationInAction = true;
 
            setTimeout(() => {
@@ -204,7 +217,7 @@ console.log(this.size.desktop)
                 listDOM.style.transform =`translateX(-${trans}%)`;
                 setTimeout(() => {
                     listDOM.style.transition = `all 0.5s linear`;
-                }, 0)
+                }, 0.16)
             }, this.animationDurationMs)
         } else {
             this.currentVisibilityIndex--;
@@ -216,7 +229,25 @@ console.log(this.size.desktop)
         setTimeout(() => {
          this.isAnimationInAction = false;
         }, this.animationDurationMs)
-    })
+       })
+
+       for (let i = 0; i < dotsDOM.length; i++) {
+            const dot = dotsDOM[i];
+            dot.addEventListener('click', () => {
+                
+                dotsDOM.forEach(d => {
+                    d.classList.remove('active');
+                });
+                dot.classList.add('active');
+
+                const trans = 100 / this.listSize * (i + this.currentSize);
+                listDOM.style.transition = 'all 0s';
+                listDOM.style.transform = `translateX(-${trans}%)`;
+                setTimeout(() => {
+                    listDOM.style.transition = 'all 1s';
+                }, 16)
+            })
+        }
     }
 }
 
