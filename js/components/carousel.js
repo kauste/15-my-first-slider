@@ -23,8 +23,18 @@ class Carousel {
         this.listSize = 0;
         this.isAnimationInAction = false;
         this.animationDurationMs = 1000;
-        
+        this.resizeWindow();
         this.init();
+    }
+    resizeWindow(){
+        window.addEventListener('resize', () => {
+            if((window.innerWidth >= 960 && this.currentSize == this.size.desktop)
+                || ((window.innerWidth >= 496 && window.innerWidth < 960) && this.currentSize == this.size.tablet)
+                || (window.innerWidth < 496 && this.currentSize == this.size.mobile)){
+                return;
+            }
+            this.init();
+        })
     }
     init () {
         if(!this.isValidSelector()){
@@ -37,9 +47,9 @@ class Carousel {
             return [true, 'Pagal pateikta selecor, nepavyko rasti elemento'];
         }
         this.updateDefatltSettings();
+
         this.render();
         this.action();
-
     }
 
     isValidSelector(){
@@ -91,6 +101,7 @@ class Carousel {
                 this.size.desktop = this.settings.size.desktop;
             }
         }
+
         if(typeof this.settings.previousNext === 'boolean') {
             this.previousNext = this.settings.previousNext;
         }
@@ -112,11 +123,10 @@ class Carousel {
         let HTML = '';
 
         for (const key in this.size){
-            if(this.copyCount < this.size[key]){
+            if(this.currentSize == this.size[key]){
                 this.copyCount = this.size[key];
             }
-        }
-        
+        }      
         
         const list = [
             ...this.data.list.slice(-this.copyCount),
@@ -125,10 +135,11 @@ class Carousel {
         ];
 
 
+        const itemWidth = 100 / this.currentSize;
         for (const item of list){
             const card = new this.cardClass(this.data.srcFolder, item);
             if(card.isValidData() && card.isValidFolder()){
-                HTML += `<div class="item">${card.render()}</div>`
+                HTML += `<div class="item" style="width:${itemWidth}%; display:flex; justify-content:center">${card.render()}</div>`
             }
         }
 
@@ -137,6 +148,7 @@ class Carousel {
         const width = list.length / this.currentSize * 100; // nepamirsti, kad listo ilgis priklauso nuo kopijų, o kopiju kiekis priklauso nuo to, kiek daugiausiai bus matoma ekrane
         this.currentVisibilityIndex = this.currentSize;
         const trans = 100 / list.length * this.currentVisibilityIndex;
+        console.log(this.currentVisibilityIndex, 'list.length: '+ list.length, 'this.copyCount: '+ this.copyCount)
 
         return `<div class="list-view">
                     <div class="list" 
@@ -182,7 +194,7 @@ class Carousel {
        const nextDOM = this.carouselDOM.querySelector('.fa-angle-right');
        const previousDOM = this.carouselDOM.querySelector('.fa-angle-left');
        const dotsDOM = this.carouselDOM.querySelectorAll('.dot');
-       this.currentVisibilityIndex === this.originalListSize + this.copyCount;
+    //    this.currentVisibilityIndex = this.originalListSize + this.copyCount;
 
        nextDOM.addEventListener('click', () => {
            if(!this.isAnimationInAction) {
