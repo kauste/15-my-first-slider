@@ -20,6 +20,7 @@ This is my first carousel, created using object-oriented programming for the fir
 
 - Events on dots
 - Adaptation to different screen sizes
+- Responsive
 
 ## Authors
 
